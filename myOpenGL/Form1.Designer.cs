@@ -38,6 +38,8 @@ namespace myOpenGL
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.MainTimer = new System.Windows.Forms.Timer(this.components);
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.start_button = new System.Windows.Forms.Button();
+            this.animation_timer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // timerRepaint
@@ -116,11 +118,27 @@ namespace myOpenGL
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // start_button
+            // 
+            this.start_button.Location = new System.Drawing.Point(883, 233);
+            this.start_button.Name = "start_button";
+            this.start_button.Size = new System.Drawing.Size(126, 40);
+            this.start_button.TabIndex = 14;
+            this.start_button.Text = "Start";
+            this.start_button.UseVisualStyleBackColor = true;
+            this.start_button.Click += new System.EventHandler(this.start_button_Click);
+            // 
+            // animation_timer
+            // 
+            this.animation_timer.Interval = 1;
+            this.animation_timer.Tick += new System.EventHandler(this.animation_timer_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1018, 541);
+            this.Controls.Add(this.start_button);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.hScrollBarRotation);
             this.Controls.Add(this.hScrollBar1);
@@ -144,6 +162,8 @@ namespace myOpenGL
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Timer MainTimer;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button start_button;
+        private System.Windows.Forms.Timer animation_timer;
     }
 }
 

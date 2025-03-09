@@ -1,5 +1,5 @@
 using System;
-using System.Drawing;//////////////////////// this is importnt for the Bitmap class
+using System.Drawing;//this is importnt for the Bitmap class
 using System.Windows.Forms;
 
 namespace OpenGL
@@ -59,7 +59,7 @@ namespace OpenGL
 			get{ return m_uint_RC; }
 		}
 
-        uint tableList;
+        public uint tableList;
         public Ball ball1 = new Ball();
 
 
@@ -75,7 +75,6 @@ namespace OpenGL
             float pocketR = 0.4f, pocketG = 0.45f * 0.8f, pocketB = 0.4f;
 
 
-
             for (int i = 0; i < 4; i++)
             {
                 GL.glPushMatrix();
@@ -86,9 +85,30 @@ namespace OpenGL
                     GL.glScaled(1, 1, -1);
 
                 //Table surface
-                createBox((float)0, (float)9, (float)0.0, (float)-0.01, (float)0.0, (float)-4, clothR, clothG, clothB);
+
+                GL.glColor3f(1.0f, 1.0f, 1.0f);
+                GL.glEnable(GL.GL_TEXTURE_2D);
+                GL.glBindTexture(GL.GL_TEXTURE_2D, textures[0]);
+                GL.glBegin(GL.GL_QUADS);
+                //GL.glDisable(GL.GL_LIGHTING);
+                GL.glNormal3f(0.0f, 1.0f, 0.0f);
+                    GL.glTexCoord2f(1.0f, 3.0f);
+                    GL.glVertex3f(0.0f, 0.0f, 0.0f);
+                
+                    GL.glTexCoord2f(-1.0f, 3.0f);
+                    GL.glVertex3f(0.0f, 0.0f, -4.0f);
+                
+                    GL.glTexCoord2f(-1.0f, 0.0f);
+                    GL.glVertex3f(9.0f, 0.0f, -4.0f);
+                
+                    GL.glTexCoord2f(1.0f, 0.0f);
+                    GL.glVertex3f(9.0f, 0.0f, 0.0f);
+                GL.glEnd();
+                GL.glDisable(GL.GL_TEXTURE_2D);// we need to disable the texture to give color to the other parts
+                //createBox((float)0, (float)9, (float)0.0, (float)-0.01, (float)0.0, (float)-4, clothR, clothG, clothB);
+
                 //Table longside
-                createBox((float)0.74, (float)8.5, (float)0.5, (float)-0.5, (float)-5, (float)-4, clothR, clothG, clothB);
+                createBox((float)0.74, (float)8.5, (float)0.5, (float)-0.5, (float)-4, (float)-5, clothR, clothG, clothB);
                 //Table shortside
                 createBox((float)9, (float)10, (float)0.5, (float)-0.5, (float)0, (float)-3.5, clothR, clothG, clothB);
                 //Table longside 2
@@ -98,18 +118,20 @@ namespace OpenGL
                 
                 
                 //Table Leg
-                createBox((float)8.5, (float)9.5, (float)-0.5, (float)-4, (float)-3.5, (float)-4.5, woodR, woodG, woodB);
+                GL.glDisable(GL.GL_LIGHTING);
+                createBox((float)8.5, (float)9.5, (float)-0.5, (float)-4, (float)-3.5, (float)-4.5, woodR*0.15f, woodG * 0.15f, woodB * 0.15f);
+                GL.glEnable(GL.GL_LIGHTING);
 
                 //Table Corner Cylinder
                 GL.glColor3f(woodR, woodG, woodB);
-                createCylinder(10f, -0.5f, -5f, 0.5f, 1, 32, 0.25f, 270, true);
+                createCylinder(10f, -0.5f, -5f, 0.5f, 1, 64, 0.25f, 270, true,false,true);
 
 
 
                 //Table Corner Pocket Cylinder
-                createCylinder(9.5f, -0.5f, -4.5f, 0.5f, 1, 32, 0.75f, 180, false, true);
+                createCylinder(9.5f, -0.5f, -4.5f, 0.5f, 1, 64, 0.75f, 180, false, true);
                 //Table Side Pocket Cylinder
-                createCylinder(0, -0.5f, -4.5f, 0.5f, 1, 32, 0.25f, 270, false, true);
+                createCylinder(0, -0.5f, -4.5f, 0.5f, 1, 64, 0.25f, 270, false, true);
 
 
 
@@ -175,9 +197,9 @@ namespace OpenGL
 
 
         }
-        protected void QueDraw(bool forShading = false)
+        protected void DrawQue(bool forShading = false)
         {
-            if (!queAppearnce)
+            if (!queAppearance)
                 return;
 
             if (forShading == true)
@@ -200,6 +222,176 @@ namespace OpenGL
 
 
         }
+
+        protected void DrawArm(bool forShading = false)
+        {
+            float colorR = 0.8f, colorG = 0.8f, colorB = 0.8f;
+            float armSize = 4.6f;
+
+
+
+            if (armShadowAppearance == false && forShading == true)
+                return;
+
+                if (forShading == true )
+            {
+                GL.glDisable(GL.GL_LIGHTING);
+                GL.glColor3d(0.3f, 0.3f, 0.3f);
+                
+                colorR = 0.1f * 0.3f;
+                colorG = 0.3f * 0.3f;
+                colorB = 0.1f * 0.3f;
+
+            }
+            else
+                GL.glColor3f(0.8f, 0.8f, 0.8f);
+
+            GL.glPushMatrix();
+
+                GL.glTranslatef(0,0,-6.5f);//move back
+                GL.glTranslatef(0f,0f,0f);//move right-left
+                GL.glTranslatef(0f, armHeight, 0f);//move up-down
+                if (forShading == false)
+                    createBox((float)-0.3, (float)0.3, (float)0.5, (float)-4, (float)0.5, (float)-0.5, colorR, colorG, colorB); // first block
+
+                GL.glTranslatef(-0.35f, 0.5f, 0f);
+                GL.glRotatef(armRotation1, 1, 0, 0);// first arm angle
+                GL.glRotatef(90, 0, 1, 0);
+                if (forShading == false)
+                    GLUT.gluCylinder(obj, 0.7, 0.7, 0.7, 16, 16);
+                if (forShading == false)
+                    GLUT.gluDisk(obj, 0, 0.7, 16, 16);
+                GL.glTranslatef(0f, 0f, 0.7f);
+                if (forShading == false)
+                    GLUT.gluDisk(obj, 0, 0.7, 16, 16);
+                GL.glTranslatef(0f, 0f, -0.35f);
+                GL.glRotatef(-90, 0, 1, 0);
+                if (forShading == false)
+                    createBox((float)-0.3, (float)0.3, (float)armSize, (float)0.5, (float)0.5, (float)-0.5, colorR, colorG, colorB);
+
+            
+                GL.glTranslatef(-0.35f, armSize, 0f);//move origin to the end of the arm
+                GL.glRotatef(armRotation2, 1, 0, 0);// second arm angle
+                GL.glRotatef(90, 0, 1, 0);
+                if (forShading == false)
+                    GLUT.gluCylinder(obj, 0.7, 0.7, 0.7, 16, 16);
+                if (forShading == false)
+                    GLUT.gluDisk(obj, 0, 0.7, 16, 16);
+                GL.glTranslatef(0f, 0f, 0.7f);
+                if (forShading == false)
+                    GLUT.gluDisk(obj, 0, 0.7, 16, 16);
+                GL.glTranslatef(0f, 0f, -0.35f);
+                GL.glRotatef(-90, 0, 1, 0);
+                createBox((float)-0.3, (float)0.3, (float)armSize-0.2f, (float)0.5, (float)0.5, (float)-0.5, colorR, colorG, colorB);
+
+                GL.glTranslatef(0f, armSize - 0.2f, 0f);//move origin to the end of the arm
+                createBox((float)-0.1, (float)0.1, (float)0.1f, (float)0, (float)-0.1, (float)0.1, colorR, colorG, colorB);
+            
+                GL.glTranslatef(0f, 0.55f, 0f);//move origin to the end of the arm
+                if(forShading == false)
+                    GL.glColor3f(0.8f, 0.8f, 0.8f);
+
+
+            if (armBallAppearance)
+            {
+                GL.glPushAttrib(GL.GL_ALL_ATTRIB_BITS); // שמירת הסטטוס של OpenGL
+                GL.glPushMatrix(); // שמירת מצב המטריצה
+
+                GLUT.glutSolidSphere(0.25, 32, 16);
+
+                GL.glPopMatrix(); // שחזור מצב המטריצה
+                GL.glPopAttrib(); // שחזור כל הסטטוסים
+            }
+
+
+
+
+            GL.glTranslatef(0f, -0.55f, 0f);//move origin to the end of the arm
+                //the claw
+
+                for (int i = 0; i < 2; i++)
+                {
+                    GL.glPushMatrix();
+
+                    if (i == 1)
+                        GL.glScalef(-1, 1, 1);
+
+                    GL.glRotatef(clawOpening, 0, 0, 1);
+                    GL.glBegin(GL.GL_QUADS);
+                    // פאה קדמית (כבר קיימת)
+                    GL.glVertex3d(0.1, 0, 0);
+                    GL.glVertex3d(0.3, 0.25, 0);
+                    GL.glVertex3d(0.4, 0.25, 0);
+                    GL.glVertex3d(0.25, 0, 0);
+                    GL.glEnd();
+
+                    GL.glBegin(GL.GL_QUADS);
+                    GL.glVertex3d(0.3, 0.25, 0);
+                    GL.glVertex3d(0.4, 0.25, 0);
+                    GL.glVertex3d(0.25, 0.6, 0);
+                    GL.glVertex3d(0.25, 0.45, 0);
+                    GL.glEnd();
+
+                    // פאה אחורית (עם עומק בציר Z)
+                    GL.glBegin(GL.GL_QUADS);
+                    GL.glVertex3d(0.1, 0, -0.2);
+                    GL.glVertex3d(0.3, 0.25, -0.2);
+                    GL.glVertex3d(0.4, 0.25, -0.2);
+                    GL.glVertex3d(0.25, 0, -0.2);
+                    GL.glEnd();
+
+                    GL.glBegin(GL.GL_QUADS);
+                    GL.glVertex3d(0.3, 0.25, -0.2);
+                    GL.glVertex3d(0.4, 0.25, -0.2);
+                    GL.glVertex3d(0.25, 0.6, -0.2);
+                    GL.glVertex3d(0.25, 0.45, -0.2);
+                    GL.glEnd();
+
+                    // חיבור הפאות - דפנות
+                    GL.glBegin(GL.GL_QUADS);
+                    GL.glVertex3d(0.1, 0, 0);
+                    GL.glVertex3d(0.25, 0, 0);
+                    GL.glVertex3d(0.25, 0, -0.2);
+                    GL.glVertex3d(0.1, 0, -0.2);
+                    GL.glEnd();
+
+                    GL.glBegin(GL.GL_QUADS);
+                    GL.glVertex3d(0.3, 0.25, 0);
+                    GL.glVertex3d(0.3, 0.25, -0.2);
+                    GL.glVertex3d(0.4, 0.25, -0.2);
+                    GL.glVertex3d(0.4, 0.25, 0);
+                    GL.glEnd();
+
+                    GL.glBegin(GL.GL_QUADS);
+                    GL.glVertex3d(0.25, 0.6, 0);
+                    GL.glVertex3d(0.25, 0.6, -0.2);
+                    GL.glVertex3d(0.25, 0.45, -0.2);
+                    GL.glVertex3d(0.25, 0.45, 0);
+                    GL.glEnd();
+
+                    // סגירת הקצוות (כיסויים)
+                    GL.glBegin(GL.GL_QUADS);
+                    GL.glVertex3d(0.1, 0, 0);
+                    GL.glVertex3d(0.3, 0.25, 0);
+                    GL.glVertex3d(0.3, 0.25, -0.2);
+                    GL.glVertex3d(0.1, 0, -0.2);
+                    GL.glEnd();
+
+                    GL.glBegin(GL.GL_QUADS);
+                    GL.glVertex3d(0.25, 0, 0);
+                    GL.glVertex3d(0.4, 0.25, 0);
+                    GL.glVertex3d(0.4, 0.25, -0.2);
+                    GL.glVertex3d(0.25, 0, -0.2);
+                    GL.glEnd();
+                    GL.glPopMatrix();
+
+                }
+
+                GL.glPopMatrix();
+
+        }
+
+
         protected void DynamicBallDraw(bool forShading = false)// this used to be a list, but it cant be 'static', the ball location values need to change...
         {
             if (forShading == true)
@@ -212,17 +404,41 @@ namespace OpenGL
 
             GL.glPushMatrix();
                 GL.glTranslatef(ball1._locationX, LightMove[1]*0.2f, ball1._locationY);
-                GLUT.glutSolidSphere(0.25, 32, 16);
-
-
-
+                if (!armBallAppearance)
+                    GLUT.glutSolidSphere(0.25, 32, 16);
             GL.glPopMatrix();
 
         }
         protected void DrawFloor()
         {
             //Room Floor
-            createBox((float)-20, (float)20, (float)-4, (float)-4.01, (float)20, (float)-20, 0.3f, 0.3f, 0.3f);
+            GL.glPushMatrix();
+
+
+            GL.glColor3f(1.0f, 1.0f, 1.0f);
+            GL.glEnable(GL.GL_TEXTURE_2D);
+            GL.glBindTexture(GL.GL_TEXTURE_2D, textures[1]);
+            GL.glBegin(GL.GL_QUADS);
+            GL.glNormal3f(0.0f, 1.0f, 0.0f);
+            GL.glTexCoord2f(0.0f, 0.0f);
+            GL.glVertex3d(-16, -4, 15);
+
+            GL.glTexCoord2f(0.0f, 1.0f);
+            GL.glVertex3d(-16, -4, -15);
+
+            GL.glTexCoord2f(1.0f, 1.0f);
+            GL.glVertex3d(16, -4, -15);
+
+            GL.glTexCoord2f(1.0f,0.0f);
+            GL.glVertex3d(16, -4, 15);
+            GL.glEnd();
+            GL.glDisable(GL.GL_TEXTURE_2D);// we need to disable the texture to give color to the other parts
+
+
+            GL.glPopMatrix();
+
+
+            //createBox((float)-20, (float)20, (float)10, (float)-4.01, (float)10, (float)-10, 0.3f, 0.3f, 0.3f,true);
         }
         protected void DrawLights()
         {
@@ -238,19 +454,8 @@ namespace OpenGL
             GL.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, lightSpecular0);
             GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightPosition0);
             pos[0] = lightPosition0[0];
-            pos[1] = lightPosition0[1];
+            pos[1] = lightPosition0[1]+5;
             pos[2] = lightPosition0[2];
-
-            /*
-            GL.glEnable(GL.GL_LIGHT1);
-            float[] lightPosition1 = { -3f, 1f, 0f, 1f };
-            float[] lightDiffuse1 = { 1f, 1f, 1f, 1f };  // White diffuse light
-            float[] lightSpecular1 = { 1f, 1f, 1f, 1f };  // Specular highlights
-            GL.glLightfv(GL.GL_LIGHT1, GL.GL_DIFFUSE, lightDiffuse1);
-            GL.glLightfv(GL.GL_LIGHT1, GL.GL_SPECULAR, lightSpecular1);
-            GL.glLightfv(GL.GL_LIGHT1, GL.GL_POSITION, lightPosition1);
-            */
-
 
             //make a sphere that indicates the light0 position
             GL.glPushMatrix();
@@ -262,17 +467,6 @@ namespace OpenGL
                 GL.glEnable(GL.GL_LIGHTING);
             GL.glPopMatrix();
 
-            /*
-            //make a sphere that indicates the light1 position
-            GL.glPushMatrix();
-            GL.glDisable(GL.GL_LIGHTING);
-                GL.glColor3f(1.0f, 1.0f, 0.0f);
-                    GL.glTranslatef(lightPosition1[0], lightPosition1[1], lightPosition1[2]);
-                    GLUT.glutSolidSphere(0.1, 8, 8);
-                GL.glColor3f(1.0f, 1.0f, 1.0f);
-                GL.glEnable(GL.GL_LIGHTING);
-            GL.glPopMatrix();
-            */
         }
         protected void DrawTestObjects()
         {
@@ -314,6 +508,40 @@ namespace OpenGL
             GL.glCallList(tableList);
             DrawFloor();
         }
+        void DrawMirror()
+        {
+            GL.glEnable(GL.GL_LIGHTING);
+            GL.glPushMatrix();
+
+            GL.glRotatef(-90, 0, 1, 0);
+            GL.glTranslatef(0f, 0.0f, -16f);
+            GL.glBegin(GL.GL_QUADS);
+            //!!! for blended REFLECTION 
+            GL.glColor4d(1, 1, 1, 0.3);
+            GL.glVertex3d(-3, -3, 0);
+            GL.glVertex3d(-3, 3, 0);
+            GL.glVertex3d(3, 3, 0);
+            GL.glVertex3d(3, -3, 0);
+
+            GL.glEnd();
+            GL.glPopMatrix();
+
+        }
+        void DrawFigures()
+        {
+            GL.glPushMatrix();
+
+            //draw figures start
+            DrawLightsAndCallLists();
+            GL.glTranslatef(0f, 0.25f, 0f);
+            DynamicBallDraw();
+            DrawQue();
+            DrawArm();
+            DrawShadows();
+            //draw figures end
+
+            GL.glPopMatrix();
+        }
 
         //important camera stuff Start ------------------------------------------------------------------------------------------------------------------------------------------------------------
         public float cameraAngleY = 0.0f;
@@ -328,13 +556,13 @@ namespace OpenGL
             if (m_uint_DC == 0 || m_uint_RC == 0)
                 return;
 
-            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT | GL.GL_STENCIL_BUFFER_BIT);
             GL.glLoadIdentity();
 
 
             GL.glPushMatrix();
-            GL.glTranslatef(0f, 0.0f, -8.0f);                       // Translate 6 Units Into The Screen
-            GL.glRotatef(45, 1.0f, 0.0f, 0.0f);
+            GL.glTranslatef(0f, 0.0f, -9.0f);
+            GL.glRotatef(30, 1.0f, 0.0f, 0.0f);
 
 
             //important camera stuff Start ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -404,19 +632,62 @@ namespace OpenGL
             //important camera stuff END ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-            //Shadows
-
+            //Shadows 
             pos[3] = 1.0f;
             ground[0, 1] = ground[1, 1] = ground[2, 1] = -0.2499f;
             //Shadows
 
 
-            DrawLightsAndCallLists();
+            //DrawFloor();
 
-            GL.glTranslatef(0f,0.25f,0f);
-            DynamicBallDraw();
-            QueDraw();
-            DrawShadows();
+            //REFLECTION b
+            GL.glEnable(GL.GL_BLEND);
+            GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
+
+
+            //only floor, draw only to STENCIL buffer
+            GL.glEnable(GL.GL_STENCIL_TEST);
+            GL.glStencilOp(GL.GL_REPLACE, GL.GL_REPLACE, GL.GL_REPLACE);
+            GL.glStencilFunc(GL.GL_ALWAYS, 1, 0xFFFFFFFF); // draw floor always
+            GL.glColorMask((byte)GL.GL_FALSE, (byte)GL.GL_FALSE, (byte)GL.GL_FALSE, (byte)GL.GL_FALSE);
+            GL.glDisable(GL.GL_DEPTH_TEST);
+
+            DrawMirror();
+
+            // restore regular settings
+            GL.glColorMask((byte)GL.GL_TRUE, (byte)GL.GL_TRUE, (byte)GL.GL_TRUE, (byte)GL.GL_TRUE);
+            GL.glEnable(GL.GL_DEPTH_TEST);
+
+            // reflection is drawn only where STENCIL buffer value equal to 1
+            GL.glStencilFunc(GL.GL_EQUAL, 1, 0xFFFFFFFF);
+            GL.glStencilOp(GL.GL_KEEP, GL.GL_KEEP, GL.GL_KEEP);
+
+            GL.glEnable(GL.GL_STENCIL_TEST);
+
+
+            // draw reflected scene
+            GL.glPushMatrix();
+            GL.glTranslatef(32.0f, 0.0f, 0);
+            GL.glScalef(-1, 1, 1); //swap on Z axis
+            GL.glEnable(GL.GL_CULL_FACE);
+            GL.glCullFace(GL.GL_BACK);
+            DrawFigures();
+            GL.glCullFace(GL.GL_FRONT);
+            DrawFigures();
+            GL.glDisable(GL.GL_CULL_FACE);
+            GL.glPopMatrix();
+
+
+            // really draw floor 
+            //( half-transparent ( see its color's alpha byte)))
+            // in order to see reflected objects 
+            GL.glDepthMask((byte)GL.GL_FALSE);
+            //DrawMirror();
+            GL.glDepthMask((byte)GL.GL_TRUE);
+            // Disable GL.GL_STENCIL_TEST to show All, else it will be cut on GL.GL_STENCIL
+            GL.glDisable(GL.GL_STENCIL_TEST);
+            DrawFigures();
+            //REFLECTION e
 
             GL.glPopMatrix();
             GL.glFlush();
@@ -442,7 +713,12 @@ namespace OpenGL
 			pfd.cDepthBits      = 32;
 			pfd.iLayerType      = (byte)(WGL.PFD_MAIN_PLANE);
 
-			int pixelFormatIndex = 0;
+            //for Stencil support 
+
+            pfd.cStencilBits = 32;
+
+
+            int pixelFormatIndex = 0;
 			pixelFormatIndex = WGL.ChoosePixelFormat(m_uint_DC, ref pfd);
 			if(pixelFormatIndex == 0)
 			{
@@ -485,7 +761,6 @@ namespace OpenGL
             Draw();
         }
 
-
         protected virtual void initRenderingGL()
 		{
 			if(m_uint_DC == 0 || m_uint_RC == 0)
@@ -505,11 +780,13 @@ namespace OpenGL
             GL.glMatrixMode(GL.GL_MODELVIEW);
             GL.glLoadIdentity();
 
-
+            //InitTexture("floorTexture.bmp");
+            InitTexture("fabrics_0075_color_1k.bmp");
+            textures[0] = texture[0];
+            InitTexture("floorTexture.bmp");
+            textures[1] = texture[0];
             tableList = GL.glGenLists(1);
             CreateTableList();
-
-
         }
 
         /// <summary>
@@ -517,8 +794,11 @@ namespace OpenGL
         /// </summary>
         /// <param name="coordinates"></param>
         /// <param name="color"></param>
-        public void createBox(float xL, float xR, float yT, float yB, float zF, float zB, float R, float G, float B)
+        public void createBox(float xL, float xR, float yT, float yB, float zF, float zB, float R, float G, float B,bool flipNormals = false)
         {
+            int normal = 1;
+            if (flipNormals)
+                normal *= -1;
 
             GL.glPushMatrix();
 
@@ -526,7 +806,7 @@ namespace OpenGL
 
             GL.glBegin(GL.GL_QUADS);
             {//purely aesthetic braces - LEFT
-                GL.glNormal3d(-1, 0, 0);
+                GL.glNormal3d(-normal, 0, 0);
                 GL.glVertex3f(xL, yB, zB);
                 GL.glVertex3f(xL, yB, zF);
                 GL.glVertex3f(xL, yT, zF);
@@ -536,7 +816,7 @@ namespace OpenGL
 
             GL.glBegin(GL.GL_QUADS);
             {//purely aesthetic braces - TOP
-                GL.glNormal3d(0, 1, 0);
+                GL.glNormal3d(0, normal, 0);
                 GL.glVertex3f(xL, yT, zB);
                 GL.glVertex3f(xR, yT, zB);
                 GL.glVertex3f(xR, yT, zF);
@@ -546,7 +826,7 @@ namespace OpenGL
 
             GL.glBegin(GL.GL_QUADS);
             {//purely aesthetic braces - RIGHT
-                GL.glNormal3d(1, 0, 0);
+                GL.glNormal3d(normal, 0, 0);
                 GL.glVertex3f(xR, yT, zB);
                 GL.glVertex3f(xR, yT, zF);
                 GL.glVertex3f(xR, yB, zF);
@@ -556,7 +836,7 @@ namespace OpenGL
 
             GL.glBegin(GL.GL_QUADS);
             {//purely aesthetic braces - BACK
-                GL.glNormal3d(0, 0, 1);
+                GL.glNormal3d(0, 0, -normal);
                 GL.glVertex3f(xL, yT, zB);
                 GL.glVertex3f(xL, yB, zB);
                 GL.glVertex3f(xR, yB, zB);
@@ -566,7 +846,7 @@ namespace OpenGL
 
             GL.glBegin(GL.GL_QUADS);
             {//purely aesthetic braces - FRONT
-                GL.glNormal3d(0, 0, -1);
+                GL.glNormal3d(0, 0, normal);
                 GL.glVertex3f(xL, yT, zF);
                 GL.glVertex3f(xL, yB, zF);
                 GL.glVertex3f(xR, yB, zF);
@@ -576,7 +856,7 @@ namespace OpenGL
             
             GL.glBegin(GL.GL_QUADS);
             {//purely aesthetic braces - BOTTOM
-                GL.glNormal3d(0, -1, 0);
+                GL.glNormal3d(0, -normal, 0);
                 GL.glVertex3f(xL, yB, zF);
                 GL.glVertex3f(xR, yB, zF);
                 GL.glVertex3f(xR, yB, zB);
@@ -598,15 +878,18 @@ namespace OpenGL
         /// <param name="radius"></param>
         /// <param name="sides"></param>
         /// <param name="howFull"></param>
-        public void createCylinder(float x, float y, float z, float radius, float height = 1 ,uint sides = 32, float howFull = 1, float rotation = 0, bool cap = false, bool invertedCap = false)
+        public void createCylinder(float x, float y, float z, float radius, float height = 1 ,uint sides = 64, float howFull = 1, float rotation = 0, bool cap = false, bool invertedCap = false, bool flipNormals = false)
         {
+            int normals = -1;
+            if (flipNormals == true)
+                normals = 1;
 
             rotation = rotation * (float)Math.PI / 180;
 
             for (int i = 0; i < sides*howFull; i++)
             {
                 GL.glBegin(GL.GL_QUADS);
-                GL.glNormal3d(-(float)Math.Cos(((float)i / sides) * Math.PI * 2 + rotation), 0, -(float)Math.Sin(((float)i / sides) * Math.PI * 2 + rotation));
+                GL.glNormal3d(normals*(float)Math.Cos(((float)i / sides) * Math.PI * 2 + rotation), 0, normals*(float)Math.Sin(((float)i / sides) * Math.PI * 2 + rotation));
                 GL.glVertex3f((float)Math.Cos(((float)i /sides)* Math.PI*2 + rotation) * radius+x, height +y, (float)Math.Sin(((float)i / sides) * Math.PI*2 + rotation) * radius + z);
                 GL.glVertex3f((float)Math.Cos(((float)i /sides)* Math.PI*2 + rotation) * radius+x, 0f+y, (float)Math.Sin(((float)i / sides) * Math.PI*2 + rotation) * radius + z);
                 GL.glVertex3f((float)Math.Cos(((float)(i+1)/sides) * Math.PI*2 + rotation) * radius+x, 0f+y, (float)Math.Sin(((float)(i + 1) / sides) * Math.PI*2 + rotation) * radius + z);
@@ -707,9 +990,13 @@ namespace OpenGL
         public float PlaneMoveValue = 0.0f;
         public float queRotation = 0.0f;
         public float quePower = 0;
-        public bool queAppearnce;
+        public bool queAppearance, armShadowAppearance = false, armBallAppearance = true;
+        public float armRotation1 = 0, armRotation2 = 0, armHeight = -11.5f, clawOpening = 0;
+        //public float armRotation1 = 45, armRotation2 = 94, armHeight = 0,clawOpening=0;
         public bool orbitBall = true;
         public float[] LightMove = new float[3];
+
+
 
         // Reduces a normal vector specified as a set of three coordinates,
         // to a unit normal vector of length one.
@@ -839,11 +1126,48 @@ namespace OpenGL
             GL.glMultMatrixf(cubeXform);
             //ObjectColor(true, 1);
             DynamicBallDraw(true);
-            QueDraw(true);
+            DrawQue(true);
+            DrawArm(true);
             //!!!!!!!!!!!!!
             GL.glPopMatrix();
             //!!!!!!!!!!!!!
         }
+
+
+
+        //---//---//---//---//---//---//---//---//---//---//---//---//---//---//---//---//---//---//---//---//TEXTURE
+
+        public uint[] texture;
+        uint[] textures = new uint[2]; 
+        void InitTexture(string imageBMPfile)
+        {
+            GL.glEnable(GL.GL_TEXTURE_2D);
+
+            texture = new uint[1];// storage for texture
+
+            Bitmap image = new Bitmap(imageBMPfile);
+            image.RotateFlip(RotateFlipType.RotateNoneFlipY); //Y axis in Windows is directed downwards, while in OpenGL-upwards
+            System.Drawing.Imaging.BitmapData bitmapdata;
+            Rectangle rect = new Rectangle(0, 0, image.Width, image.Height);
+
+            bitmapdata = image.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+
+            GL.glGenTextures(1, texture);
+            GL.glBindTexture(GL.GL_TEXTURE_2D, texture[0]);
+            //  VN-in order to use System.Drawing.Imaging.BitmapData Scan0 I've added overloaded version to
+            //  OpenGL.cs
+            //  [DllImport(GL_DLL, EntryPoint = "glTexImage2D")]
+            //  public static extern void glTexImage2D(uint target, int level, int internalformat, int width, int height, int border, uint format, uint type, IntPtr pixels);
+            GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, (int)GL.GL_RGB8, image.Width, image.Height,
+                0, GL.GL_BGR_EXT, GL.GL_UNSIGNED_byte, bitmapdata.Scan0);
+            GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, (int)GL.GL_LINEAR);		// Linear Filtering
+            GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, (int)GL.GL_LINEAR);		// Linear Filtering
+
+            image.UnlockBits(bitmapdata);
+            image.Dispose();
+        }
+
 
     }
 }

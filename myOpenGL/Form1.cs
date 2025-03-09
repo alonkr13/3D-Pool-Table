@@ -14,6 +14,7 @@ namespace myOpenGL
     {
         cOGL cGL;
         double t = 0;
+        double t1 = 0;
         Point temp;
         List<Ball> BallList = new List<Ball>();
         
@@ -172,7 +173,7 @@ namespace myOpenGL
                 Console.WriteLine("this is the c: (" + cGL.ball1._x.c + "," + cGL.ball1._y.c + ")");
 
                 timer1.Start();
-                cGL.queAppearnce = false;
+                cGL.queAppearance = false;
                 cGL.quePower = 0;
             }
 
@@ -358,7 +359,7 @@ namespace myOpenGL
             inBall._y.b = 0;
             inBall._x.c = 0;
             inBall._y.c = 0;
-            cGL.queAppearnce = true;
+            cGL.queAppearance = true;
         }
 
         private double ballXmovment(Ball inball)
@@ -388,6 +389,64 @@ namespace myOpenGL
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
             cGL.orbitBall = !cGL.orbitBall;
+        }
+
+        private void start_button_Click(object sender, EventArgs e)
+        {
+            animation_timer.Start();
+        }
+
+        private void animation_timer_Tick(object sender, EventArgs e)
+        {
+            t1 += 1;
+
+            //shadow apearance
+            if (t1 > 100 && t1 < 400)
+                cGL.armShadowAppearance = true;
+            if (t1 > 320)
+                cGL.armShadowAppearance = false;
+
+
+            if (cGL.armHeight<0 && t1 < 200)
+            {
+                cGL.armHeight += 0.07f;
+            }
+
+            if (t1 > 40 && t1 < 200)
+            {
+                if (cGL.armRotation2 < 94)
+                    cGL.armRotation2 += 0.6f;
+                if (cGL.armRotation2 > 94)
+                    cGL.armRotation2 = 94;
+            }
+
+            if (t1 > 100 && t1 < 200)
+            {
+                if (cGL.armRotation1 < 45)
+                    cGL.armRotation1 += 0.7f;
+                if (cGL.armRotation1 > 45)
+                    cGL.armRotation1 = 45;
+            }
+
+            if (t1 == 198)
+                cGL.armBallAppearance = false;
+
+            if(t1>=198)
+            {
+                if(cGL.clawOpening > -20)
+                cGL.clawOpening -= 0.5f;
+            }
+
+            if (t1 >= 250 && t1 < 550)
+            {
+                if (cGL.armRotation2 > 0)
+                    cGL.armRotation2 -= 0.9f;
+                if (cGL.armRotation1 > 0)
+                    cGL.armRotation1 -= 0.7f;
+                cGL.armHeight -= 0.045f;
+
+            }
+
         }
     }
 }
