@@ -76,12 +76,14 @@ namespace myOpenGL
             // 
             // hScrollBar1
             // 
+            this.hScrollBar1.LargeChange = 1;
             this.hScrollBar1.Location = new System.Drawing.Point(883, 49);
-            this.hScrollBar1.Maximum = 10;
-            this.hScrollBar1.Minimum = -5;
+            this.hScrollBar1.Maximum = 1000;
+            this.hScrollBar1.Minimum = -1000;
             this.hScrollBar1.Name = "hScrollBar1";
             this.hScrollBar1.Size = new System.Drawing.Size(126, 17);
             this.hScrollBar1.TabIndex = 8;
+            this.hScrollBar1.Value = 500;
             this.hScrollBar1.Scroll += new System.Windows.Forms.ScrollEventHandler(this.hScrollBar1_changed);
             // 
             // hScrollBarRotation

@@ -537,9 +537,29 @@ namespace OpenGL
             DynamicBallDraw();
             DrawQue();
             DrawArm();
-            DrawShadows();
             //draw figures end
 
+            //clipping before making the shadows!!!!
+            double[] clipPlane0 = {0,0,1,3.999};
+            double[] clipPlane1 = {0,0,-1, 3.999};
+            double[] clipPlane2 = {1,0,0, 8.999 };
+            double[] clipPlane3 = {-1,0,0, 8.999 };
+                
+            GL.glClipPlane(GL.GL_CLIP_PLANE0, clipPlane0);
+            GL.glClipPlane(GL.GL_CLIP_PLANE1, clipPlane1);
+            GL.glClipPlane(GL.GL_CLIP_PLANE2, clipPlane2);
+            GL.glClipPlane(GL.GL_CLIP_PLANE3, clipPlane3);
+            GL.glEnable(GL.GL_CLIP_PLANE0);
+            GL.glEnable(GL.GL_CLIP_PLANE1);
+            GL.glEnable(GL.GL_CLIP_PLANE2);
+            GL.glEnable(GL.GL_CLIP_PLANE3);
+
+            DrawShadows();
+
+            GL.glDisable(GL.GL_CLIP_PLANE0);
+            GL.glDisable(GL.GL_CLIP_PLANE1);
+            GL.glDisable(GL.GL_CLIP_PLANE2);
+            GL.glDisable(GL.GL_CLIP_PLANE3);
             GL.glPopMatrix();
         }
 

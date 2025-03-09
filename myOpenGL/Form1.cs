@@ -218,7 +218,7 @@ namespace myOpenGL
 
         private void hScrollBar1_changed(object sender, ScrollEventArgs e)
         {
-            cGL.PlaneMoveValue = (float)hScrollBar1.Value;
+            cGL.PlaneMoveValue = (float)hScrollBar1.Value/100;
             Console.WriteLine(cGL.PlaneMoveValue.ToString());
         }
 
